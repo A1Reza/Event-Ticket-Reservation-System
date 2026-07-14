@@ -19,3 +19,9 @@ CREATE TABLE reservation (
                              reservation_date DATE,
                              status VARCHAR(50)
 );
+
+
+DROP DATABASE event_ticket_db;
+
+DROP TABLE event;
+DROP TABLE reservation;

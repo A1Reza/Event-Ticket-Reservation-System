@@ -10,7 +10,7 @@ public class Reservation {
     private String customerName;
     private String customerPhone;
     private Long eventId;
-    private Integer ticketCount;
+    private Integer ticketCount;  //tickests that customer want
     private LocalDate reservationDate;
     private ReservationStatus status;
 

@@ -1,6 +1,7 @@
 package ir.reza;
 
 import ir.reza.enums.EventStatus;
+import ir.reza.exception.BusinessException;
 import ir.reza.model.Event;
 import ir.reza.model.Reservation;
 import ir.reza.repository.EventRepository;
@@ -21,18 +22,26 @@ public class Main {
 
     public static void main(String[] args) {
 
-        EventRepository eventRepository = new EventRepositoryImpl();
+        System.out.println("\n<< Event Ticket Reservation System >>");
+
+
+        EventRepository eventRepository =
+                new EventRepositoryImpl();
+
         ReservationRepository reservationRepository =
                 new ReservationRepositoryImpl();
 
+
         EventService eventService =
                 new EventService(eventRepository);
+
 
         ReservationService reservationService =
                 new ReservationService(
                         reservationRepository,
                         eventRepository
                 );
+
 
         ReportService reportService =
                 new ReportService(
@@ -47,73 +56,91 @@ public class Main {
 
                 menu();
 
-                int choice = Integer.parseInt(scanner.nextLine());
+                int choice =
+                        Integer.parseInt(scanner.nextLine());
 
 
                 switch (choice) {
 
                     case 1 -> createEvent(eventService);
 
-                    case 2 ->
-                            eventService.getAllEvents()
-                                    .forEach(System.out::println);
+
+                    case 2 -> eventService.getAllEvents()
+                            .forEach(System.out::println);
 
 
-                    case 3 ->
-                            updateEvent(eventService);
+                    case 3 -> updateEvent(eventService);
 
 
                     case 4 -> {
 
                         System.out.print("Event id: ");
-                        Long id = Long.parseLong(scanner.nextLine());
+
+                        Long id =
+                                Long.parseLong(scanner.nextLine());
 
                         eventService.cancelEvent(id);
 
-                        System.out.println("Event cancelled.");
+                        System.out.println(
+                                "Event cancelled successfully."
+                        );
                     }
 
 
-                    case 5 ->
-                            createReservation(reservationService);
+                    case 5 -> createReservation(reservationService);
 
 
                     case 6 -> {
 
                         System.out.print("Reservation id: ");
+
                         Long id =
                                 Long.parseLong(scanner.nextLine());
 
+
                         reservationService.cancelReservation(id);
 
-                        System.out.println("Reservation cancelled.");
+
+                        System.out.println(
+                                "Reservation cancelled successfully."
+                        );
                     }
 
 
-                    case 7 ->
-                            reservationService.getAllReservations()
-                                    .forEach(System.out::println);
+                    case 7 -> reservationService.getAllReservations()
+                            .forEach(System.out::println);
 
 
-                    case 8 ->
-                            reports(reportService);
+                    case 8 -> reports(reportService);
 
 
                     case 9 -> {
-                        System.out.println("Exit...");
+
+                        System.out.println("Goodbye...");
+
                         return;
                     }
 
 
-                    default ->
-                            System.out.println("Invalid choice.");
+                    default -> System.out.println(
+                            "Invalid option."
+                    );
                 }
+
+
+            } catch (BusinessException e) {
+
+                System.out.println(
+                        "Business Error: "
+                                + e.getMessage()
+                );
 
 
             } catch (Exception e) {
 
                 System.out.println(
-                        "Error: " + e.getMessage()
+                        "Unexpected Error: "
+                                + e.getMessage()
                 );
             }
         }
@@ -123,6 +150,8 @@ public class Main {
     private static void menu() {
 
         System.out.println("""
+            
+                --- Event Ticket Reservation System Menu ---
                 
                 1. Create Event
                 2. Show All Events
@@ -139,15 +168,17 @@ public class Main {
     }
 
 
-
     private static void createEvent(EventService service) {
 
+
         System.out.print("Title: ");
-        String title = scanner.nextLine();
+        String title =
+                scanner.nextLine();
 
 
         System.out.print("Location: ");
-        String location = scanner.nextLine();
+        String location =
+                scanner.nextLine();
 
 
         System.out.print("Capacity: ");
@@ -156,31 +187,37 @@ public class Main {
 
 
         System.out.print("Ticket price: ");
+
         BigDecimal price =
                 new BigDecimal(scanner.nextLine());
 
 
-        Event event = new Event(
-                null,
-                EventStatus.ACTIVE,
-                price,
-                0,
-                capacity,
-                location,
-                title
-        );
+        Event event =
+                new Event(
+                        null,
+                        EventStatus.ACTIVE,
+                        price,
+                        0,
+                        capacity,
+                        location,
+                        title
+                );
 
 
         service.createEvent(event);
 
-        System.out.println("Created.");
-    }
 
+        System.out.println(
+                "Event created successfully."
+        );
+    }
 
 
     private static void updateEvent(EventService service) {
 
+
         System.out.print("Event id: ");
+
         Long id =
                 Long.parseLong(scanner.nextLine());
 
@@ -190,20 +227,28 @@ public class Main {
 
 
         System.out.print("New title: ");
-        event.setTitle(scanner.nextLine());
+
+        event.setTitle(
+                scanner.nextLine()
+        );
 
 
         System.out.print("New location: ");
-        event.setLocation(scanner.nextLine());
+
+        event.setLocation(
+                scanner.nextLine()
+        );
 
 
         System.out.print("New capacity: ");
+
         event.setCapacity(
                 Integer.parseInt(scanner.nextLine())
         );
 
 
-        System.out.print("New price: ");
+        System.out.print("New ticket price: ");
+
         event.setTicketPrice(
                 new BigDecimal(scanner.nextLine())
         );
@@ -211,10 +256,11 @@ public class Main {
 
         service.updateEvent(event);
 
-        System.out.println("Updated.");
+
+        System.out.println(
+                "Event updated successfully."
+        );
     }
-
-
 
 
     private static void createReservation(
@@ -222,19 +268,25 @@ public class Main {
 
 
         System.out.print("Customer name: ");
-        String name = scanner.nextLine();
+
+        String name =
+                scanner.nextLine();
 
 
-        System.out.print("Phone: ");
-        String phone = scanner.nextLine();
+        System.out.print("Customer phone: ");
+
+        String phone =
+                scanner.nextLine();
 
 
         System.out.print("Event id: ");
+
         Long eventId =
                 Long.parseLong(scanner.nextLine());
 
 
         System.out.print("Ticket count: ");
+
         Integer count =
                 Integer.parseInt(scanner.nextLine());
 
@@ -253,9 +305,10 @@ public class Main {
         service.createReservation(reservation);
 
 
-        System.out.println("Reservation created.");
+        System.out.println(
+                "Reservation created successfully."
+        );
     }
-
 
 
     private static void reports(
@@ -263,30 +316,39 @@ public class Main {
 
 
         System.out.println(
-                "Active events: "
-                        + service.getTotalActiveEvents()
+                "\nActive events count: "
+                        +
+                        service.getTotalActiveEvents()
         );
 
 
         System.out.println(
-                "Average price: "
-                        + service.getAverageTicketPrice()
+                "Average ticket price: "
+                        +
+                        service.getAverageTicketPrice()
         );
 
 
         System.out.println(
-                "Most expensive: "
-                        + service.getMostExpensiveEvent()
+                "Most expensive event: "
+                        +
+                        service.getMostExpensiveEvent()
         );
 
 
-        System.out.println("Active reservations:");
+        System.out.println(
+                "\nActive reservations:"
+        );
+
 
         service.getActiveReservations()
                 .forEach(System.out::println);
 
 
-        System.out.println("Full events:");
+        System.out.println(
+                "\nFully booked events:"
+        );
+
 
         service.getFullyBookedEvents()
                 .forEach(System.out::println);
