@@ -65,13 +65,9 @@ public class EventService {
                         new EventNotFoundException("Event not found."));
     }
 
-    public void deleteEvent(Long id) {
 
-        eventRepository.findById(id)
-                .orElseThrow(() ->
-                        new EventNotFoundException("Event not found."));
-
-        eventRepository.delete(id);
+    public void saveChanges(Event event) {
+        eventRepository.update(event);
     }
 
     private void validateEvent(Event event) {
